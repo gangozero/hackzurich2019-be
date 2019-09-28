@@ -51,6 +51,11 @@ func (s *Server) recalculateState(id string) {
 		gameState.Count -= int(float64(gameState.Count) * float64(gameState.CountFarm) * reduceFarm)
 		//log.Printf("Reduced farm: %d", gameState.Count)
 
+		if gameState.Count < 0 {
+			gameState.Count = 0
+			gameState.Status = models.GameDescriptionStatusFINISHED
+		}
+
 		err = s.setState(id, gameState)
 		if err != nil {
 			log.Println(err.Error())
