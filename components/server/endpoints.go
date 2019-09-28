@@ -136,7 +136,7 @@ func (s *Server) DestroyDisaster(id string, goal *models.Point) (*models.GameSta
 }
 
 func isNearby(p1, p2 *models.Point) bool {
-	return math.Abs(p1.Lat-p2.Lat)+math.Abs(p1.Lng-p2.Lng) < nearbyPresision
+	return math.Abs(p1.Lat-p2.Lat)+math.Abs(p1.Lng-p2.Lng) < nearbyPrecision
 }
 
 func remove(s []*models.Point, i int) []*models.Point {

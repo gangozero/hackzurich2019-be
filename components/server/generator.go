@@ -19,7 +19,7 @@ const (
 	growRate        = 0.0005
 	reduceFish      = 0.001
 	reduceFarm      = 0.002
-	nearbyPresision = 0.00001
+	nearbyPrecision = 0.00001
 	latMin          = -83.998375
 	lngMin          = -72.019623
 	latMax          = 16.372719
