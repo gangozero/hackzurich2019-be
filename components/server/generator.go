@@ -14,15 +14,16 @@ import (
 )
 
 const (
-	initialCount = 100000
-	finalCount   = 100
-	growRate     = 0.0005
-	reduceFish   = 0.001
-	reduceFarm   = 0.002
-	latMin       = -83.998375
-	lngMin       = -72.019623
-	latMax       = 16.372719
-	lngMax       = -46.980018
+	initialCount    = 100000
+	finalCount      = 100
+	growRate        = 0.0005
+	reduceFish      = 0.001
+	reduceFarm      = 0.002
+	nearbyPresision = 0.00001
+	latMin          = -83.998375
+	lngMin          = -72.019623
+	latMax          = 16.372719
+	lngMax          = -46.980018
 )
 
 func (s *Server) isActive(id string) bool {
