@@ -12,6 +12,7 @@ import (
 
 const (
 	envNameTokenOnwater = "TOKEN_ONWATER"
+	envNameFlagOnwater  = "ENABLE_ONWATER"
 )
 
 func init() {

@@ -60,8 +60,7 @@ func (s *Server) recalculateState(id string) {
 
 func (s *Server) addFish(id string) {
 	if s.isActive(id) {
-		//TODO: change to true to add sea only location
-		loc := generateLocation(false)
+		loc := generateLocation(true)
 
 		gameState, err := s.getState(id)
 		if err != nil {
@@ -143,20 +142,19 @@ func isInSea(point *models.Point) bool {
 	return result.Water
 }
 
-func generateLocation(checkSeaFlag bool) *models.Point {
+func generateLocation(isSeaFlag bool) *models.Point {
 	point := &models.Point{
 		Lat: latMin + (latMax-latMin)*rand.Float64(),
 		Lng: lngMin + (lngMax-lngMin)*rand.Float64(),
 	}
 
-	if checkSeaFlag {
-		if isInSea(point) {
+	if os.Getenv(envNameFlagOnwater) == "true" {
+		if isInSea(point) == isSeaFlag {
 			return point
+		} else {
+			return generateLocation(isSeaFlag)
 		}
-
-		return generateLocation(checkSeaFlag)
 	} else {
 		return point
 	}
-
 }
