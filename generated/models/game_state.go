@@ -22,7 +22,13 @@ type GameState struct {
 	Count int64 `json:"count,omitempty"`
 
 	// Ship count
+	CountFarm int64 `json:"countFarm,omitempty"`
+
+	// Ship count
 	CountShip int64 `json:"countShip,omitempty"`
+
+	// farms
+	Farms []*Point `json:"farms"`
 
 	// ships
 	Ships []*Point `json:"ships"`
@@ -32,6 +38,10 @@ type GameState struct {
 func (m *GameState) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateFarms(formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.validateShips(formats); err != nil {
 		res = append(res, err)
 	}
@@ -39,6 +49,31 @@ func (m *GameState) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *GameState) validateFarms(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Farms) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Farms); i++ {
+		if swag.IsZero(m.Farms[i]) { // not required
+			continue
+		}
+
+		if m.Farms[i] != nil {
+			if err := m.Farms[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("farms" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

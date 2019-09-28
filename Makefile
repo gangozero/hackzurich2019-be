@@ -8,7 +8,7 @@ SWAGGER_VERSION=v0.20.1
 SWAGGER_CMD=docker run --rm -it -v $(PROJECT_ROOT):$(PROJECT_TOOL_PATH) -w $(PROJECT_TOOL_PATH) quay.io/goswagger/swagger:$(SWAGGER_VERSION)
 
 DOCKER_REPO=zrh.ocir.io/zrywfei8cmcr/hz2019/$(PROJECT_NAME)
-VERSION=0.5
+VERSION=0.6
 TAG=$(DOCKER_REPO):$(VERSION)
 
 .DEFAULT_GOAL: validate

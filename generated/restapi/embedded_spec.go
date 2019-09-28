@@ -267,10 +267,21 @@ func init() {
           "type": "number",
           "format": "integer"
         },
+        "countFarm": {
+          "description": "Ship count",
+          "type": "number",
+          "format": "integer"
+        },
         "countShip": {
           "description": "Ship count",
           "type": "number",
           "format": "integer"
+        },
+        "farms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/point"
+          }
         },
         "ships": {
           "type": "array",
@@ -543,10 +554,21 @@ func init() {
           "type": "number",
           "format": "integer"
         },
+        "countFarm": {
+          "description": "Ship count",
+          "type": "number",
+          "format": "integer"
+        },
         "countShip": {
           "description": "Ship count",
           "type": "number",
           "format": "integer"
+        },
+        "farms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/point"
+          }
         },
         "ships": {
           "type": "array",

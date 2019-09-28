@@ -33,14 +33,15 @@ func randStringRunes(n int) string {
 	return string(b)
 }
 
-//TODO: add lock for count
 type Game struct {
 	ID           string
 	Count        int
 	CountFish    int
+	CountFarm    int
 	Status       string
 	msgChan      chan *command
 	LocationFish []*models.Point
+	LocationFarm []*models.Point
 }
 
 type Server struct {

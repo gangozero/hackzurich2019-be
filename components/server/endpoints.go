@@ -16,6 +16,8 @@ func (s *Server) StartGame() (*models.GameDescription, error) {
 		Count:        initialCount,
 		CountFish:    0,
 		LocationFish: []*models.Point{},
+		CountFarm:    0,
+		LocationFarm: []*models.Point{},
 		Status:       models.GameDescriptionStatusACTIVE,
 		msgChan:      chn,
 	}
@@ -90,7 +92,9 @@ func (s *Server) GetGameState(id string) (*models.GameState, error) {
 	return &models.GameState{
 		Count:     int64(gameState.Count),
 		CountShip: int64(gameState.CountFish),
+		CountFarm: int64(gameState.CountFarm),
 		Ships:     gameState.LocationFish,
+		Farms:     gameState.LocationFarm,
 	}, nil
 }
 
@@ -117,7 +121,9 @@ func (s *Server) DestroyDisaster(id string, goal *models.Point) (*models.GameSta
 	return &models.GameState{
 		Count:     int64(gameState.Count),
 		CountShip: int64(gameState.CountFish),
+		CountFarm: int64(gameState.CountFarm),
 		Ships:     gameState.LocationFish,
+		Farms:     gameState.LocationFarm,
 	}, nil
 }
 

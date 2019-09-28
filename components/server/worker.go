@@ -20,8 +20,7 @@ func (s *Server) startWorker(id string) chan *command {
 	// TODO: replace with better flow
 	go func() {
 		for {
-			s.grow(id)
-			s.reduceFish(id)
+			s.recalculateState(id)
 			time.Sleep(2 * time.Second)
 		}
 	}()
@@ -29,7 +28,14 @@ func (s *Server) startWorker(id string) chan *command {
 	go func() {
 		for {
 			s.addFish(id)
-			time.Sleep(10 * time.Second)
+			time.Sleep(5 * time.Second)
+		}
+	}()
+
+	go func() {
+		for {
+			s.addFarm(id)
+			time.Sleep(8 * time.Second)
 		}
 	}()
 

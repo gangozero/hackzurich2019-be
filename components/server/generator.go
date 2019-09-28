@@ -17,6 +17,7 @@ const (
 	initialCount = 1000000
 	growRate     = 0.00005
 	reduceFish   = 0.0001
+	reduceFarm   = 0.0002
 	latMin       = -83.998375
 	lngMin       = -72.019623
 	latMax       = 16.372719
@@ -36,7 +37,7 @@ func (s *Server) isActive(id string) bool {
 	return true
 }
 
-func (s *Server) grow(id string) {
+func (s *Server) recalculateState(id string) {
 	if s.isActive(id) {
 		gameState, err := s.getState(id)
 		if err != nil {
@@ -44,25 +45,11 @@ func (s *Server) grow(id string) {
 		}
 
 		gameState.Count += int(float64(gameState.Count) * growRate)
-
 		//log.Printf("Grow: %d", gameState.Count)
-
-		err = s.setState(id, gameState)
-		if err != nil {
-			log.Println(err.Error())
-		}
-	}
-}
-
-func (s *Server) reduceFish(id string) {
-	if s.isActive(id) {
-		gameState, err := s.getState(id)
-		if err != nil {
-			log.Println(err.Error())
-		}
-
 		gameState.Count -= int(float64(gameState.Count) * float64(gameState.CountFish) * reduceFish)
-		//log.Printf("Fish: %d", gameState.Count)
+		//log.Printf("Reduced fish: %d", gameState.Count)
+		gameState.Count -= int(float64(gameState.Count) * float64(gameState.CountFarm) * reduceFarm)
+		//log.Printf("Reduced farm: %d", gameState.Count)
 
 		err = s.setState(id, gameState)
 		if err != nil {
@@ -73,7 +60,8 @@ func (s *Server) reduceFish(id string) {
 
 func (s *Server) addFish(id string) {
 	if s.isActive(id) {
-		loc := generateSeaLocation()
+		//TODO: change to true to add sea only location
+		loc := generateLocation(false)
 
 		gameState, err := s.getState(id)
 		if err != nil {
@@ -83,6 +71,26 @@ func (s *Server) addFish(id string) {
 		gameState.LocationFish = append(gameState.LocationFish, loc)
 		gameState.CountFish += 1
 		//log.Printf("Added fish: %d", gameState.CountFish)
+
+		err = s.setState(id, gameState)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}
+}
+
+func (s *Server) addFarm(id string) {
+	if s.isActive(id) {
+		loc := generateLocation(false)
+
+		gameState, err := s.getState(id)
+		if err != nil {
+			log.Println(err.Error())
+		}
+
+		gameState.LocationFarm = append(gameState.LocationFarm, loc)
+		gameState.CountFarm += 1
+		//log.Printf("Added farm: %d", gameState.CountFarm)
 
 		err = s.setState(id, gameState)
 		if err != nil {
@@ -135,15 +143,20 @@ func isInSea(point *models.Point) bool {
 	return result.Water
 }
 
-func generateSeaLocation() *models.Point {
+func generateLocation(checkSeaFlag bool) *models.Point {
 	point := &models.Point{
 		Lat: latMin + (latMax-latMin)*rand.Float64(),
 		Lng: lngMin + (lngMax-lngMin)*rand.Float64(),
 	}
 
-	if isInSea(point) {
+	if checkSeaFlag {
+		if isInSea(point) {
+			return point
+		}
+
+		return generateLocation(checkSeaFlag)
+	} else {
 		return point
 	}
 
-	return generateSeaLocation()
 }
