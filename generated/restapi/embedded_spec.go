@@ -103,6 +103,14 @@ func init() {
             "name": "game_id",
             "in": "path",
             "required": true
+          },
+          {
+            "name": "goal",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/point"
+            }
           }
         ],
         "responses": {
@@ -371,6 +379,14 @@ func init() {
             "name": "game_id",
             "in": "path",
             "required": true
+          },
+          {
+            "name": "goal",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/point"
+            }
           }
         ],
         "responses": {

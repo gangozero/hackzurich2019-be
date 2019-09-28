@@ -1,6 +1,8 @@
 package server
 
 import (
+	"math"
+
 	"github.com/repa40x/hackzurich2019-be/generated/models"
 )
 
@@ -90,4 +92,40 @@ func (s *Server) GetGameState(id string) (*models.GameState, error) {
 		CountShip: int64(gameState.CountFish),
 		Ships:     gameState.LocationFish,
 	}, nil
+}
+
+func (s *Server) DestroyDisaster(id string, goal *models.Point) (*models.GameState, error) {
+
+	gameState, err := s.getState(id)
+	if err != nil {
+		return nil, err
+	}
+
+	for idx, point := range gameState.LocationFish {
+		if isNearby(point, goal) {
+			gameState.LocationFish = remove(gameState.LocationFish, idx)
+			gameState.CountFish -= 1
+			break
+		}
+	}
+
+	err = s.setState(id, gameState)
+	if err != nil {
+		return nil, err
+	}
+
+	return &models.GameState{
+		Count:     int64(gameState.Count),
+		CountShip: int64(gameState.CountFish),
+		Ships:     gameState.LocationFish,
+	}, nil
+}
+
+func isNearby(p1, p2 *models.Point) bool {
+	return math.Abs(p1.Lat-p2.Lat)+math.Abs(p1.Lng-p2.Lng) < 0.0000001
+}
+
+func remove(s []*models.Point, i int) []*models.Point {
+	s[i] = s[len(s)-1]
+	return s[:len(s)-1]
 }

@@ -6,12 +6,16 @@ package game
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/go-openapi/errors"
+	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
 	strfmt "github.com/go-openapi/strfmt"
+
+	models "github.com/repa40x/hackzurich2019-be/generated/models"
 )
 
 // NewDestroyDisasterParams creates a new DestroyDisasterParams object
@@ -35,6 +39,11 @@ type DestroyDisasterParams struct {
 	  In: path
 	*/
 	GameID string
+	/*
+	  Required: true
+	  In: body
+	*/
+	Goal *models.Point
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
@@ -51,6 +60,28 @@ func (o *DestroyDisasterParams) BindRequest(r *http.Request, route *middleware.M
 		res = append(res, err)
 	}
 
+	if runtime.HasBody(r) {
+		defer r.Body.Close()
+		var body models.Point
+		if err := route.Consumer.Consume(r.Body, &body); err != nil {
+			if err == io.EOF {
+				res = append(res, errors.Required("goal", "body"))
+			} else {
+				res = append(res, errors.NewParseError("goal", "body", "", err))
+			}
+		} else {
+			// validate body object
+			if err := body.Validate(route.Formats); err != nil {
+				res = append(res, err)
+			}
+
+			if len(res) == 0 {
+				o.Goal = &body
+			}
+		}
+	} else {
+		res = append(res, errors.Required("goal", "body"))
+	}
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

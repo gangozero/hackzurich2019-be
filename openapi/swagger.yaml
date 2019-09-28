@@ -175,6 +175,11 @@ paths:
           name: game_id
           in: path
           required: true
+        - name: goal
+          in: body
+          schema:
+            $ref: "#/definitions/point"
+          required: true
       responses:
         200:
           description: Destroyed

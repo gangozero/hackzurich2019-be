@@ -111,8 +111,12 @@ func isInSea(point *models.Point) bool {
 
 	switch resp.StatusCode {
 	case 429:
+		log.Printf("Too many requests")
 		time.Sleep(10 * time.Second)
 		return false
+	case 200:
+	default:
+		log.Printf("Wrong response code: %d", resp.StatusCode)
 	}
 
 	defer resp.Body.Close()

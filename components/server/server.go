@@ -64,6 +64,11 @@ func (s *Server) GameGetGameStateHandler() game.GetGameStateHandler {
 
 func (s *Server) GameDestroyDisasterHandler() game.DestroyDisasterHandler {
 	return game.DestroyDisasterHandlerFunc(func(params game.DestroyDisasterParams) middleware.Responder {
-		return middleware.NotImplemented("operation game.DestroyDisaster has to be implemented")
+		resp, err := s.DestroyDisaster(params.GameID, params.Goal)
+		if err != nil {
+			log.Printf("[DestroyDisaster] Error: %s", err.Error())
+			return game.NewDestroyDisasterDefault(500)
+		}
+		return game.NewDestroyDisasterOK().WithPayload(resp)
 	})
 }
