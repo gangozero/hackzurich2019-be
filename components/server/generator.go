@@ -14,10 +14,11 @@ import (
 )
 
 const (
-	initialCount = 1000000
-	growRate     = 0.00005
-	reduceFish   = 0.0001
-	reduceFarm   = 0.0002
+	initialCount = 100000
+	finalCount   = 100
+	growRate     = 0.0005
+	reduceFish   = 0.001
+	reduceFarm   = 0.002
 	latMin       = -83.998375
 	lngMin       = -72.019623
 	latMax       = 16.372719
@@ -51,8 +52,7 @@ func (s *Server) recalculateState(id string) {
 		gameState.Count -= int(float64(gameState.Count) * float64(gameState.CountFarm) * reduceFarm)
 		//log.Printf("Reduced farm: %d", gameState.Count)
 
-		if gameState.Count < 0 {
-			gameState.Count = 0
+		if gameState.Count < finalCount {
 			gameState.Status = models.GameDescriptionStatusFINISHED
 		}
 
