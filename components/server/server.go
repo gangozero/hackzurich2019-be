@@ -1,37 +1,64 @@
 package server
 
 import (
+	"log"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/repa40x/hackzurich2019-be/generated/restapi/operations/game"
 )
 
 func (s *Server) GameStartGameHandler() game.StartGameHandler {
 	return game.StartGameHandlerFunc(func(params game.StartGameParams) middleware.Responder {
-		return middleware.NotImplemented("operation game.StartGame has to be implemented")
+		resp, err := s.StartGame()
+		if err != nil {
+			log.Printf("[StartGame] Error: %s", err.Error())
+			return game.NewStartGameDefault(500)
+		}
+		return game.NewStartGameOK().WithPayload(resp)
 	})
 }
 
 func (s *Server) GameGetGameDescriptionHandler() game.GetGameDescriptionHandler {
 	return game.GetGameDescriptionHandlerFunc(func(params game.GetGameDescriptionParams) middleware.Responder {
-		return middleware.NotImplemented("operation game.GetGameDescription has to be implemented")
+		resp, err := s.GetGameDescription(params.GameID)
+		if err != nil {
+			log.Printf("[GetGameDescription] Error: %s", err.Error())
+			return game.NewGetGameDescriptionDefault(500)
+		}
+		return game.NewGetGameDescriptionOK().WithPayload(resp)
 	})
 }
 
 func (s *Server) GamePauseGameHandler() game.PauseGameHandler {
 	return game.PauseGameHandlerFunc(func(params game.PauseGameParams) middleware.Responder {
-		return middleware.NotImplemented("operation game.PauseGame has to be implemented")
+		resp, err := s.PauseGame(params.GameID)
+		if err != nil {
+			log.Printf("[PauseGame] Error: %s", err.Error())
+			return game.NewPauseGameDefault(500)
+		}
+		return game.NewPauseGameOK().WithPayload(resp)
 	})
 }
 
 func (s *Server) GameResumeGameHandler() game.ResumeGameHandler {
 	return game.ResumeGameHandlerFunc(func(params game.ResumeGameParams) middleware.Responder {
-		return middleware.NotImplemented("operation game.ResumeGame has to be implemented")
+		resp, err := s.ResumeGame(params.GameID)
+		if err != nil {
+			log.Printf("[ResumeGame] Error: %s", err.Error())
+			return game.NewPauseGameDefault(500)
+		}
+		return game.NewResumeGameOK().WithPayload(resp)
 	})
 }
 
 func (s *Server) GameGetGameStateHandler() game.GetGameStateHandler {
 	return game.GetGameStateHandlerFunc(func(params game.GetGameStateParams) middleware.Responder {
-		return middleware.NotImplemented("operation game.GetGameState has to be implemented")
+		resp, err := s.GetGameState(params.GameID)
+		if err != nil {
+			log.Printf("[GetGameState] Error: %s", err.Error())
+			return game.NewGetGameStateDefault(500)
+		}
+		return game.NewGetGameStateOK().WithPayload(resp)
 	})
 }
 

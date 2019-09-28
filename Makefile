@@ -7,9 +7,9 @@ PROJECT_TOOL_PATH=/go/src/github.com/repa40x/$(PROJECT_NAME)
 SWAGGER_VERSION=v0.20.1
 SWAGGER_CMD=docker run --rm -it -v $(PROJECT_ROOT):$(PROJECT_TOOL_PATH) -w $(PROJECT_TOOL_PATH) quay.io/goswagger/swagger:$(SWAGGER_VERSION)
 
-DOCKER_REPO=$(PROJECT_NAME)
-VERSION=0.1
-TAG=$(DOCKER_REPO)/backend:$(VERSION)
+DOCKER_REPO=zrh.ocir.io/zrywfei8cmcr/hz2019/$(PROJECT_NAME)
+VERSION=0.2
+TAG=$(DOCKER_REPO):$(VERSION)
 
 .DEFAULT_GOAL: validate
 
@@ -35,6 +35,9 @@ build:
 
 run:
 	./hackzurich2019-be --scheme=http --host=0.0.0.0 --port=8080
+
+docker-login:
+	docker login -u $(DOCKER_USER) -p $(DOCKER_TOKEN) $(DOCKER_URL)
 
 docker-build:
 	docker build --pull -f ./deployment/Dockerfile -t $(TAG) .

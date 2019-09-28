@@ -1,8 +1,31 @@
 package server
 
+import (
+	"math/rand"
+	"time"
+)
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+const initialCount = 1000000
+
+func randStringRunes(n int) string {
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letterRunes[rand.Intn(len(letterRunes))]
+	}
+	return string(b)
+}
+
+//TODO: add lock for count
 type Game struct {
-	ID    string
-	Count string
+	ID     string
+	Count  int
+	Status string
 }
 
 type Server struct {
