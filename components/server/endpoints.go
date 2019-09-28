@@ -10,10 +10,12 @@ func (s *Server) StartGame() (*models.GameDescription, error) {
 	chn := s.startWorker(id)
 
 	gameState := &Game{
-		ID:      id,
-		Count:   initialCount,
-		Status:  models.GameDescriptionStatusACTIVE,
-		msgChan: chn,
+		ID:           id,
+		Count:        initialCount,
+		CountFish:    0,
+		LocationFish: []*models.Point{},
+		Status:       models.GameDescriptionStatusACTIVE,
+		msgChan:      chn,
 	}
 	err := s.setState(id, gameState)
 	if err != nil {
@@ -84,6 +86,8 @@ func (s *Server) GetGameState(id string) (*models.GameState, error) {
 	}
 
 	return &models.GameState{
-		Count: int64(gameState.Count),
+		Count:     int64(gameState.Count),
+		CountShip: int64(gameState.CountFish),
+		Ships:     gameState.LocationFish,
 	}, nil
 }

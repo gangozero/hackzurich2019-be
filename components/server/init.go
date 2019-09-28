@@ -1,18 +1,29 @@
 package server
 
 import (
+	"log"
 	"math/rand"
+	"os"
 	"sync"
 	"time"
+
+	"github.com/repa40x/hackzurich2019-be/generated/models"
+)
+
+const (
+	envNameTokenOnwater = "TOKEN_ONWATER"
 )
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
+	//check what needed ENV variables are set
+	_, isSet := os.LookupEnv(envNameTokenOnwater)
+	if !isSet {
+		log.Fatalf("Environmental variable '%s' has to be set", envNameTokenOnwater)
+	}
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-
-const initialCount = 1000000
 
 func randStringRunes(n int) string {
 	b := make([]rune, n)
@@ -24,10 +35,12 @@ func randStringRunes(n int) string {
 
 //TODO: add lock for count
 type Game struct {
-	ID      string
-	Count   int
-	Status  string
-	msgChan chan *command
+	ID           string
+	Count        int
+	CountFish    int
+	Status       string
+	msgChan      chan *command
+	LocationFish []*models.Point
 }
 
 type Server struct {

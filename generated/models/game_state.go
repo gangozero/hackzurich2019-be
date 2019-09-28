@@ -6,8 +6,11 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"strconv"
+
 	strfmt "github.com/go-openapi/strfmt"
 
+	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
 )
 
@@ -17,10 +20,50 @@ type GameState struct {
 
 	// Pinguin count
 	Count int64 `json:"count,omitempty"`
+
+	// Ship count
+	CountShip int64 `json:"countShip,omitempty"`
+
+	// ships
+	Ships []*Point `json:"ships"`
 }
 
 // Validate validates this game state
 func (m *GameState) Validate(formats strfmt.Registry) error {
+	var res []error
+
+	if err := m.validateShips(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if len(res) > 0 {
+		return errors.CompositeValidationError(res...)
+	}
+	return nil
+}
+
+func (m *GameState) validateShips(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Ships) { // not required
+		return nil
+	}
+
+	for i := 0; i < len(m.Ships); i++ {
+		if swag.IsZero(m.Ships[i]) { // not required
+			continue
+		}
+
+		if m.Ships[i] != nil {
+			if err := m.Ships[i].Validate(formats); err != nil {
+				if ve, ok := err.(*errors.Validation); ok {
+					return ve.ValidateName("ships" + "." + strconv.Itoa(i))
+				}
+				return err
+			}
+		}
+
+	}
+
 	return nil
 }
 

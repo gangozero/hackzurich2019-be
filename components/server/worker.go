@@ -21,7 +21,15 @@ func (s *Server) startWorker(id string) chan *command {
 	go func() {
 		for {
 			s.grow(id)
+			s.reduceFish(id)
 			time.Sleep(2 * time.Second)
+		}
+	}()
+
+	go func() {
+		for {
+			s.addFish(id)
+			time.Sleep(10 * time.Second)
 		}
 	}()
 

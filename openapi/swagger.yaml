@@ -46,6 +46,22 @@ definitions:
         type: number
         format: integer
         description: Pinguin count
+      countShip:
+        type: number
+        format: integer
+        description: Ship count
+      ships:
+        type: array
+        items:
+          $ref: "#/definitions/point"
+
+  point:
+    type: object
+    properties:
+      lat:
+        type: number
+      lng:
+        type: number
 
 paths:
   /game:

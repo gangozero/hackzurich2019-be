@@ -258,6 +258,28 @@ func init() {
           "description": "Pinguin count",
           "type": "number",
           "format": "integer"
+        },
+        "countShip": {
+          "description": "Ship count",
+          "type": "number",
+          "format": "integer"
+        },
+        "ships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/point"
+          }
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
         }
       }
     }
@@ -504,6 +526,28 @@ func init() {
           "description": "Pinguin count",
           "type": "number",
           "format": "integer"
+        },
+        "countShip": {
+          "description": "Ship count",
+          "type": "number",
+          "format": "integer"
+        },
+        "ships": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/point"
+          }
+        }
+      }
+    },
+    "point": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
         }
       }
     }
