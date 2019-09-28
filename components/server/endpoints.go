@@ -1,38 +1,43 @@
 package server
 
 import (
-	"fmt"
-
 	"github.com/repa40x/hackzurich2019-be/generated/models"
 )
 
 func (s *Server) StartGame() (*models.GameDescription, error) {
 	id := randStringRunes(16)
 
-	s.state[id] = &Game{
-		ID:     id,
-		Count:  initialCount,
-		Status: models.GameDescriptionStatusACTIVE,
-	}
+	chn := s.startWorker(id)
 
-	// TODO: add lifecycle
+	gameState := &Game{
+		ID:      id,
+		Count:   initialCount,
+		Status:  models.GameDescriptionStatusACTIVE,
+		msgChan: chn,
+	}
+	err := s.setState(id, gameState)
+	if err != nil {
+		return nil, err
+	}
 
 	return &models.GameDescription{
 		ID:     id,
-		Status: models.GameDescriptionStatusACTIVE,
+		Status: gameState.Status,
 	}, nil
 }
 
 func (s *Server) PauseGame(id string) (*models.GameDescription, error) {
 
-	gameState, ok := s.state[id]
-	if !ok {
-		return nil, fmt.Errorf("game with ID '%s' not found", id)
+	gameState, err := s.getState(id)
+	if err != nil {
+		return nil, err
 	}
 	gameState.Status = models.GameDescriptionStatusPAUSED
-	s.state[id] = gameState
 
-	// TODO: add lifecycle
+	err = s.setState(id, gameState)
+	if err != nil {
+		return nil, err
+	}
 
 	return &models.GameDescription{
 		ID:     id,
@@ -42,14 +47,15 @@ func (s *Server) PauseGame(id string) (*models.GameDescription, error) {
 
 func (s *Server) ResumeGame(id string) (*models.GameDescription, error) {
 
-	gameState, ok := s.state[id]
-	if !ok {
-		return nil, fmt.Errorf("game with ID '%s' not found", id)
+	gameState, err := s.getState(id)
+	if err != nil {
+		return nil, err
 	}
 	gameState.Status = models.GameDescriptionStatusACTIVE
-	s.state[id] = gameState
-
-	// TODO: add lifecycle
+	err = s.setState(id, gameState)
+	if err != nil {
+		return nil, err
+	}
 
 	return &models.GameDescription{
 		ID:     id,
@@ -59,9 +65,9 @@ func (s *Server) ResumeGame(id string) (*models.GameDescription, error) {
 
 func (s *Server) GetGameDescription(id string) (*models.GameDescription, error) {
 
-	gameState, ok := s.state[id]
-	if !ok {
-		return nil, fmt.Errorf("game with ID '%s' not found", id)
+	gameState, err := s.getROState(id)
+	if err != nil {
+		return nil, err
 	}
 
 	return &models.GameDescription{
@@ -72,9 +78,9 @@ func (s *Server) GetGameDescription(id string) (*models.GameDescription, error) 
 
 func (s *Server) GetGameState(id string) (*models.GameState, error) {
 
-	gameState, ok := s.state[id]
-	if !ok {
-		return nil, fmt.Errorf("game with ID '%s' not found", id)
+	gameState, err := s.getROState(id)
+	if err != nil {
+		return nil, err
 	}
 
 	return &models.GameState{

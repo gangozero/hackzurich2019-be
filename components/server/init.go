@@ -2,6 +2,7 @@ package server
 
 import (
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -23,13 +24,15 @@ func randStringRunes(n int) string {
 
 //TODO: add lock for count
 type Game struct {
-	ID     string
-	Count  int
-	Status string
+	ID      string
+	Count   int
+	Status  string
+	msgChan chan *command
 }
 
 type Server struct {
 	state map[string]*Game
+	m     sync.RWMutex
 }
 
 func NewServer() *Server {
@@ -37,4 +40,8 @@ func NewServer() *Server {
 	return &Server{
 		state: map[string]*Game{},
 	}
+}
+
+type command struct {
+	action string
 }
