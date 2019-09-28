@@ -113,6 +113,14 @@ func (s *Server) DestroyDisaster(id string, goal *models.Point) (*models.GameSta
 		}
 	}
 
+	for idx, point := range gameState.LocationFarm {
+		if isNearby(point, goal) {
+			gameState.LocationFarm = remove(gameState.LocationFarm, idx)
+			gameState.CountFarm -= 1
+			break
+		}
+	}
+
 	err = s.setState(id, gameState)
 	if err != nil {
 		return nil, err
